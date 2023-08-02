@@ -16,6 +16,7 @@ const Landing = ({ navigation }) => {
     <Container>
       <StyledText>Landing</StyledText>
       <Button title="Chat" onPress={() => navigation.navigate("Chat")} />
+      <Button title="Search" onPress={() => navigation.navigate("Search")} />
     </Container>
   );
 };

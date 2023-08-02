@@ -1,6 +1,6 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import { Landing, Chat } from "../screens";
+import { Landing, Chat, Search } from "../screens";
 
 const Stack = createStackNavigator();
 
@@ -20,6 +20,8 @@ const StackNav = () => {
         //   headerTintColor: "#ffffff",
         // }}
       />
+
+      <Stack.Screen name="Search" component={Search} />
     </Stack.Navigator>
   );
 };

@@ -28,7 +28,7 @@ const HeaderContainer = styled.View`
 
 const HeaderText = styled.Text`
   margin-top: 30px;
-  justify-items: center;
+
   align-self: center;
   color: white;
   font-size: 22px;
