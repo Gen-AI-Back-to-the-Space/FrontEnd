@@ -11,7 +11,7 @@ const StackNav = () => {
       <Stack.Screen
         name="Chat"
         component={Chat}
-
+        screenOptions={{ headerShown: false }}
         // options={{
         //   title: "Conversation",
         //   headerStyle: {
