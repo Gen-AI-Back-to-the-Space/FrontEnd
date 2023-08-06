@@ -8,9 +8,11 @@ import {
   StatusBar,
   TextInput,
   ImageBackground,
-  KeyboardAvoidingView,
+  NativeModules,
+  SafeAreaView,
 } from "react-native";
 import { GiftedChat } from "react-native-gifted-chat";
+import axios from "axios";
 
 const Width = Dimensions.get("window").width;
 const Height = Dimensions.get("window").height;
@@ -84,22 +86,40 @@ const TextInputStyle = styled.TextInput`
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
+  const [users, setUsers] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    setMessages([
-      {
-        _id: 1,
-        text: "안녕하세요. 당신의 이 전 여행, 앞으로의 여행에 대한 정보를 물어보세요.",
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: "Space",
-          // avatar: "../../assets/images/backspace_character.png",
-        },
-      },
-    ]);
-  }, []);
+    const fetchUsers = async () => {
+      try {
+        setError(null);
+        setUsers(null);
+        setLoading(true);
 
+        const response = await axios.get("https://space.skflyaiproject.store");
+        setUsers(response.data);
+      } catch (e) {
+        setError(e);
+      }
+      setLoading(false);
+    };
+    fetchUsers();
+
+    // setMessages([
+    //   {
+    //     _id: 1,
+    //     text: "안녕하세요. 당신의 이 전 여행, 앞으로의 여행에 대한 정보를 물어보세요.",
+    //     createdAt: new Date(),
+    //     user: {
+    //       _id: 2,
+    //       name: "Space",
+    //       // avatar: "../../assets/images/backspace_character.png",
+    //     },
+    //   },
+    // ]);
+  }, []);
+  const { StatusBarManager } = NativeModules;
   const onSend = useCallback((messages = []) => {
     setMessages((previousMessages) =>
       GiftedChat.append(previousMessages, messages)
@@ -109,6 +129,7 @@ const Chat = () => {
   const url = "https://space.skflyaiproject.store/";
 
   const fetchQuery = async () => {
+    const response = url.get();
     // 데이터 가져오기
 
     return answer;
@@ -116,32 +137,31 @@ const Chat = () => {
 
   return (
     <Container>
-      <StatusBar backgroundColor="#000C40" />
-      {/* 그라디언트 opacity 50% 정도로 끝내야 함 */}
-      <LinearGradient
-        colors={["#000C40", "#ffffff"]}
-        style={styles.linearGradient}
-      >
-        <HeaderText>Conversation</HeaderText>
-        <IconContainer>
-          <ChatIcon
-            source={require("../../assets/images/backspace_character.png")}
-          />
-          <ChatText>Backs</ChatText>
-        </IconContainer>
+      <SafeAreaView>
+        <StatusBar backgroundColor="#000C40" />
+        {/* 그라디언트 opacity 50% 정도로 끝내야 함 */}
+        <LinearGradient
+          colors={["#000C40", "#ffffff"]}
+          style={styles.linearGradient}
+        >
+          <HeaderText>Conversation</HeaderText>
+          <IconContainer>
+            <ChatIcon
+              source={require("../../assets/images/backspace_character.png")}
+            />
+            <ChatText>Backs</ChatText>
+          </IconContainer>
 
-        <HeaderAnnounceText>
-          당신의 이 전 여행, 앞으로의 여행에 대한 정보를 물어보세요.
-        </HeaderAnnounceText>
-      </LinearGradient>
-      {/* <BodyContainer> */}
-      <KeyboardAvoidingView
-        behavior={Platform.select({ ios: "padding", android: undefined })}
-        style={styles.avoid}
-      >
+          <HeaderAnnounceText>
+            당신의 이 전 여행, 앞으로의 여행에 대한 정보를 물어보세요.
+          </HeaderAnnounceText>
+        </LinearGradient>
+        {/* <BodyContainer> */}
+
         <GiftedChat
           messages={messages}
           onSend={(messages) => onSend(messages)}
+          bottomOffset={20}
           user={{
             _id: 1,
           }}
@@ -153,7 +173,7 @@ const Chat = () => {
             onChangeText={setMessage}
           ></TextInputStyle> */}
         {/* </BodyContainer> */}
-      </KeyboardAvoidingView>
+      </SafeAreaView>
     </Container>
   );
 };
@@ -162,10 +182,10 @@ const Chat = () => {
 var styles = StyleSheet.create({
   linearGradient: {
     width: Width,
-    height: Height / 5,
+    height: Height / 3,
   },
   avoid: {
-    flex: 1,
+    height: "20px",
   },
 });
 
