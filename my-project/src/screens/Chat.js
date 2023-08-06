@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import styled from "styled-components/native";
 import { LinearGradient } from "expo-linear-gradient";
 import {
@@ -10,6 +10,7 @@ import {
   ImageBackground,
   KeyboardAvoidingView,
 } from "react-native";
+import { GiftedChat } from "react-native-gifted-chat";
 
 const Width = Dimensions.get("window").width;
 const Height = Dimensions.get("window").height;
@@ -19,6 +20,7 @@ const Container = styled.SafeAreaView`
   align-items: center;
   background-color: #ffffff;
   flex: 1;
+  width: 100%;
 `;
 
 const HeaderContainer = styled.View`
@@ -56,7 +58,6 @@ const ChatText = styled.Text`
 
 const HeaderAnnounceText = styled.Text`
   margin-top: 50px;
-  justify-items: center;
   align-self: center;
   color: white;
   font-size: 18px;
@@ -67,10 +68,10 @@ const StyledText = styled.Text`
   margin-bottom: 10px;
 `;
 
-const BodyContainer = styled.View`
-  flex: 1;
-  justify-content: flex-end;
-`;
+// const BodyContainer = styled.View`
+//   flex: 1;
+//   justify-content: flex-end;
+// `;
 
 const TextInputStyle = styled.TextInput`
   margin: 15px;
@@ -82,33 +83,76 @@ const TextInputStyle = styled.TextInput`
 `;
 
 const Chat = () => {
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+    setMessages([
+      {
+        _id: 1,
+        text: "안녕하세요. 당신의 이 전 여행, 앞으로의 여행에 대한 정보를 물어보세요.",
+        createdAt: new Date(),
+        user: {
+          _id: 2,
+          name: "Space",
+          // avatar: "../../assets/images/backspace_character.png",
+        },
+      },
+    ]);
+  }, []);
+
+  const onSend = useCallback((messages = []) => {
+    setMessages((previousMessages) =>
+      GiftedChat.append(previousMessages, messages)
+    );
+  }, []);
+
+  const url = "https://space.skflyaiproject.store/";
+
+  const fetchQuery = async () => {
+    // 데이터 가져오기
+
+    return answer;
+  };
+
   return (
     <Container>
+      <StatusBar backgroundColor="#000C40" />
+      {/* 그라디언트 opacity 50% 정도로 끝내야 함 */}
+      <LinearGradient
+        colors={["#000C40", "#ffffff"]}
+        style={styles.linearGradient}
+      >
+        <HeaderText>Conversation</HeaderText>
+        <IconContainer>
+          <ChatIcon
+            source={require("../../assets/images/backspace_character.png")}
+          />
+          <ChatText>Backs</ChatText>
+        </IconContainer>
+
+        <HeaderAnnounceText>
+          당신의 이 전 여행, 앞으로의 여행에 대한 정보를 물어보세요.
+        </HeaderAnnounceText>
+      </LinearGradient>
+      {/* <BodyContainer> */}
       <KeyboardAvoidingView
         behavior={Platform.select({ ios: "padding", android: undefined })}
         style={styles.avoid}
       >
-        <StatusBar backgroundColor="#000C40" />
-        {/* 그라디언트 opacity 50% 정도로 끝내야 함 */}
-        <LinearGradient
-          colors={["#000C40", "#ffffff"]}
-          style={styles.linearGradient}
-        >
-          <HeaderText>Conversation</HeaderText>
-          <IconContainer>
-            <ChatIcon
-              source={require("../../assets/images/backspace_character.png")}
-            />
-            <ChatText>Backs</ChatText>
-          </IconContainer>
+        <GiftedChat
+          messages={messages}
+          onSend={(messages) => onSend(messages)}
+          user={{
+            _id: 1,
+          }}
+        />
 
-          <HeaderAnnounceText>
-            당신의 이 전 여행, 앞으로의 여행에 대한 정보를 물어보세요.
-          </HeaderAnnounceText>
-        </LinearGradient>
-        <BodyContainer>
-          <TextInputStyle placeholder="Type a Message"></TextInputStyle>
-        </BodyContainer>
+        {/* <TextInputStyle
+            placeholder="Type a Message"
+            value={message}
+            onChangeText={setMessage}
+          ></TextInputStyle> */}
+        {/* </BodyContainer> */}
       </KeyboardAvoidingView>
     </Container>
   );
@@ -118,7 +162,7 @@ const Chat = () => {
 var styles = StyleSheet.create({
   linearGradient: {
     width: Width,
-    height: Height / 3,
+    height: Height / 5,
   },
   avoid: {
     flex: 1,
