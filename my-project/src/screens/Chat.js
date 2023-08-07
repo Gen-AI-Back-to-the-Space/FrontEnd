@@ -97,7 +97,9 @@ const Chat = () => {
         setUsers(null);
         setLoading(true);
 
-        const response = await axios.get("https://space.skflyaiproject.store");
+        const response = await axios.get(
+          "https://space.skflyaiproject.store/api/v1/"
+        );
         setUsers(response.data);
       } catch (e) {
         setError(e);
@@ -120,11 +122,41 @@ const Chat = () => {
     // ]);
   }, []);
   const { StatusBarManager } = NativeModules;
-  const onSend = useCallback((messages = []) => {
+
+  const onSend = useCallback(async (messages = []) => {
     setMessages((previousMessages) =>
       GiftedChat.append(previousMessages, messages)
     );
+
+    console.log(messages[0].text);
+
+    const res = await axios.post(
+      "https://space.skflyaiproject.store/api/v1/tour-memory/ai-search",
+      {
+        query: `${messages[0].text}`,
+      }
+    );
+
+    const data = res.data;
+
+    setMessages([
+      {
+        _id: 1,
+        text: `${data.answer}`,
+        createdAt: new Date(),
+        user: {
+          _id: 2,
+          name: "Space",
+          // avatar: "../../assets/images/backspace_character.png",
+        },
+      },
+    ]);
   }, []);
+
+  // const getAnswer = () => {
+  //   onSend();
+  //   const lastMessage = GiftedChat[GiftedChat.length - 1];
+  // };
 
   const url = "https://space.skflyaiproject.store/";
 
