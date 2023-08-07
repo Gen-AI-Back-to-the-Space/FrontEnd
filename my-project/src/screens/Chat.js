@@ -2,12 +2,9 @@ import React, { useState, useEffect, useCallback } from "react";
 import styled from "styled-components/native";
 import { LinearGradient } from "expo-linear-gradient";
 import {
-  Text,
   StyleSheet,
   Dimensions,
   StatusBar,
-  TextInput,
-  ImageBackground,
   NativeModules,
   SafeAreaView,
 } from "react-native";
@@ -32,14 +29,13 @@ const HeaderContainer = styled.View`
 
 const HeaderText = styled.Text`
   margin-top: 30px;
-
   align-self: center;
   color: white;
   font-size: 22px;
 `;
 
 const IconContainer = styled.View`
-  margin-top: 50px;
+  margin-top: 23px;
   margin-left: 30px;
   flex-direction: row;
 `;
@@ -59,7 +55,7 @@ const ChatText = styled.Text`
 `;
 
 const HeaderAnnounceText = styled.Text`
-  margin-top: 50px;
+  margin-top: 25px;
   align-self: center;
   color: white;
   font-size: 18px;
@@ -130,27 +126,39 @@ const Chat = () => {
 
     console.log(messages[0].text);
 
-    const res = await axios.post(
-      "https://space.skflyaiproject.store/api/v1/tour-memory/ai-search",
-      {
-        query: `${messages[0].text}`,
-      }
-    );
+    const res = await axios.post(`${url}api/v1/tour-memory/ai-search`, {
+      query: `${messages[0].text}`,
+    });
 
     const data = res.data;
 
-    setMessages([
-      {
-        _id: 1,
-        text: `${data.answer}`,
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: "Space",
-          // avatar: "../../assets/images/backspace_character.png",
+    setMessages((previousMessages) => {
+      console.log(previousMessages);
+      return GiftedChat.append(previousMessages, [
+        {
+          _id: 1,
+          text: `${data.answer}`,
+          createdAt: new Date(),
+          user: {
+            _id: 2,
+            name: "Space",
+            // avatar: "../../assets/images/backspace_character.png",
+          },
         },
-      },
-    ]);
+      ]);
+    });
+    // setMessages([
+    // {
+    //   _id: 1,
+    //   text: `${data.answer}`,
+    //   createdAt: new Date(),
+    //   user: {
+    //     _id: 2,
+    //     name: "Space",
+    //     // avatar: "../../assets/images/backspace_character.png",
+    //   },
+    // },
+    // ]);
   }, []);
 
   // const getAnswer = () => {
@@ -214,7 +222,7 @@ const Chat = () => {
 var styles = StyleSheet.create({
   linearGradient: {
     width: Width,
-    height: Height / 3,
+    height: Height / 4,
   },
   avoid: {
     height: "20px",
